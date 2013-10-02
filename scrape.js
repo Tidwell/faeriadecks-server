@@ -1,9 +1,21 @@
 var fs = require('fs');
+var env = require('./env.js');
 var request = require('request');
 var cheerio = require('cheerio');
 
+var path
+if (env === 'local') {
+	path = "../faeria-deckbuilder/app/cards.json";
+}
+else if (env === 'prod') {
+	path = "../faeriadecks/cards.json";
+}
+else if (env === 'stage') {
+	path = "../faeria-deckbuilder/dist/cards.json";
+}
+
 function save(cards) {
-	fs.writeFile("../faeria-deckbuilder/app/cards.json", JSON.stringify(cards), function(err) {
+	fs.writeFile(path, JSON.stringify(cards), function(err) {
 		if (err) {
 			console.log(err);
 		} else {
