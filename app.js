@@ -1,4 +1,4 @@
-var env = require('./env.js')
+var env = require('./env.js');
 var scraper = require('./scrape.js');
 scraper.scrape();
 
@@ -8,6 +8,8 @@ var path = require('path');
 var app = express();
 
 var dir, indexRoute;
+
+console.log('env is', env);
 if (env === 'local') {
 	dir = '/../faeria-deckbuilder/app';
 	indexRoute = '/../faeria-deckbuilder/app/index.html';
