@@ -8,7 +8,7 @@ var app = express();
 
 app.use(express.static(__dirname+'/../faeria-deckbuilder/app'));
 
-app.listen(8080, "127.0.0.1");
+app.listen(9005, "127.0.0.1");
 
 app.get('/*', function(req,res) {
 	res.sendfile(path.normalize(__dirname + '/../faeria-deckbuilder/app/index.html'));
