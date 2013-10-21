@@ -46,19 +46,36 @@ function scrape($) {
 		return fixed;
 	}
 
+	/**
+	 * @param String str The text to be converted to titleCase.
+	 * @param Array glue the words to leave in lowercase.
+	 */
+	function properTitleCase(str, glue) {
+		glue = (glue) ? glue : ['of', 'for', 'and', 'the'];
+		return str.replace(/(\w)(\w*)/g, function(_, i, r) {
+			var j = i.toUpperCase() + (r != null ? r : "");
+			return (glue.indexOf(j.toLowerCase()) < 0) ? j : j.toLowerCase();
+		});
+	};
+
 	$('table.wikitable').each(function(i) {
 		$(this).find('tr').each(function() {
-			var $tds = $(this).find('td');
-			var name = extract($tds[1]);
+				var $tds = $(this).find('td');
+				var name = extract($tds[1]);
 
 			if (!name) { return; }
 
-			if (!nameIdMap[name] && !nameIdMap[titleCase(name)]) {
+			var gameId;
+			if (nameIdMap[name]) {
+				gameId = nameIdMap[name];
+			} else if (nameIdMap[titleCase(name)]) {
+				gameId = nameIdMap[titleCase(name)];
+			} else if (nameIdMap[properTitleCase(name)]) {
+				gameId = nameIdMap[properTitleCase(name)];
+			} else {
 				console.log('Failed to find: '+ name);
 				return;
 			}
-
-			var gameId = nameIdMap[name]
 			nameIdMap[name] = null;
 
 			var life = extract($tds[7]);
