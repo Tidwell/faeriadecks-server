@@ -1,1 +1,1 @@
-module.exports = 'stage';
+module.exports = 'local';

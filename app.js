@@ -4,7 +4,6 @@ var url = require('url');
 
 scraper.scrape();
 
-
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/faeriadecks');
 var DeckInfo = mongoose.model('DeckInfo', {
@@ -21,12 +20,12 @@ var dir, indexRoute;
 
 console.log('env is', env);
 if (env === 'local') {
-	dir = '/../faeria-deckbuilder/app';
-	indexRoute = '/../faeria-deckbuilder/app/index.html';
+	dir = '/../faeriadecks/app';
+	indexRoute = '/../faeriadecks/app/index.html';
 }
 if (env === 'stage') {
-	dir = '/../faeria-deckbuilder/dist';
-	indexRoute = '/../faeria-deckbuilder/dist/index.html';
+	dir = '/../faeriadecks/dist';
+	indexRoute = '/../faeriadecks/dist/index.html';
 }
 if (env === 'prod') {
 	dir = '/../faeriadecks/';

@@ -8,13 +8,13 @@ var nameIdMap = require('./name-id-map.js');
 var path;
 
 if (env === 'local') {
-	path = "../faeria-deckbuilder/app/cards.json";
+	path = "../faeriadecks/app/cards.json";
 }
 else if (env === 'prod') {
 	path = "../faeriadecks/cards.json";
 }
 else if (env === 'stage') {
-	path = "../faeria-deckbuilder/dist/cards.json";
+	path = "../faeriadecks/dist/cards.json";
 }
 
 function save(cards) {

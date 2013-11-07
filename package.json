@@ -1,0 +1,28 @@
+{
+  "name": "faeriadecks-server",
+  "version": "1.0.0",
+  "author": "Aaron Tidwell <aaron.tidwell@gmail.com>",
+  "description": "server component to faeriadecks.com",
+  "contributors": [{
+    "name": "Aaron Tidwell",
+    "email": "aaron.tidwell@gmail.com"
+  }],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tidwell/faeriadecks-server"
+  },
+  "keywords": [
+    "faeria",
+    "deckbuilder",
+    "server"
+  ],
+  "dependencies": {
+    "request": "*",
+    "cheerio": "*",
+    "mongoose": "*",
+    "express": "*"
+  },
+  "engines": {
+    "node": ">=0.10"
+  }
+}
