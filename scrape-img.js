@@ -19,19 +19,11 @@ fs.readFile('./cards.json', 'utf8', function(err, data) {
 	cards = JSON.parse(data);
 
 	cards.forEach(function(card) {
-		// console.log(card)
-		// console.log('requesting ' + card.name);
-
-
 		var options = {
 			host: 'play.faeria.net',
 			port: 80,
 			path: '/assets/cards/' + pad(card.gameId) + '.jpg'
 		};
-		if (String(card.gameId).length >= 4) {
-			return;
-		}
-		console.log(options);
 
 		var request = http.get(options, function(res) {
 			var imagedata = '';
@@ -46,7 +38,7 @@ fs.readFile('./cards.json', 'utf8', function(err, data) {
 					if (err) {
 						console.log('error with '+ card.name+' '+card.id);
 					}
-					//console.log(card.name+' - file saved.');
+					console.log(card.name+' - file saved.');
 				});
 			});
 		});
