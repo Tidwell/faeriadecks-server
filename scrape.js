@@ -5,17 +5,7 @@ var cheerio = require('cheerio');
 
 var nameIdMap = require('./name-id-map.js');
 
-var path;
-
-if (env === 'local') {
-	path = "../faeriadecks/app/cards.json";
-}
-else if (env === 'prod') {
-	path = "../faeriadecks/cards.json";
-}
-else if (env === 'stage') {
-	path = "../faeriadecks/dist/cards.json";
-}
+var path = './cards.json';
 
 function save(cards) {
 	fs.writeFile(path, JSON.stringify(cards), function(err) {

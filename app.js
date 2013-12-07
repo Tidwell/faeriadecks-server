@@ -1,6 +1,7 @@
 var env = require('./env.js');
 var scraper = require('./scrape.js');
 var url = require('url');
+var fs = require('fs')
 
 scraper.scrape();
 
@@ -70,6 +71,23 @@ app.get('/load', function(req,res){
 		res.json({data: data});
 	});
 
+});
+
+
+var cards = [];
+fs.readFile('./cards.json', 'utf8', function (err,data) {
+  if (err) {
+    return console.log(err);
+  }
+  cards = JSON.parse(data);
+});
+
+app.get('/cards.json', function(req,res){
+	if (req.query.callback) {
+		res.jsonp(cards);
+		return;
+	}
+	res.end(JSON.stringify(cards));
 });
 
 app.get('/*', function(req,res) {
