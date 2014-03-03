@@ -18,11 +18,18 @@ function save(cards) {
 }
 
 function scrape($) {
-	var colorOrder = ['blue','green','yellow','red','human'];
 	var cards = [];
 
-	function extract(td) {
-		var txt = $(td).text().trim();
+	function extract(td, replacelb) {
+		txt = $(td);
+		if (replacelb) {
+			txt = txt.html();
+			txt = txt.replace('<br>', ' [lb] ');
+			txt = $('<td>'+txt+'</td>');
+		}
+		var txt = txt.text();
+		
+		txt = txt.trim();
 		return txt ? txt : null;
 	}
 
@@ -36,84 +43,85 @@ function scrape($) {
 		return fixed;
 	}
 
-	/**
-	 * @param String str The text to be converted to titleCase.
-	 * @param Array glue the words to leave in lowercase.
-	 */
-	function properTitleCase(str, glue) {
-		glue = (glue) ? glue : ['of', 'for', 'and', 'the'];
-		return str.replace(/(\w)(\w*)/g, function(_, i, r) {
-			var j = i.toUpperCase() + (r != null ? r : "");
-			return (glue.indexOf(j.toLowerCase()) < 0) ? j : j.toLowerCase();
-		});
-	};
+	function getColor(td) {
+		var txt = extract($(td));
+		return txt.toLowerCase();
+	}
 
-	$('table.wikitable').each(function(i) {
-		$(this).find('tr').each(function() {
-				var $tds = $(this).find('td');
-				var name = extract($tds[1]);
+	function getRarity(td) {
+		var img = $(td).find('img');
+		if (!img.length) {
+			return 'B';
+		} else {
+			img = $(img);
+			var src = img.attr('src');
+			if (src) {
+				if (src.indexOf('common') !== -1) {
+					return 'C';
+				}
+				if (src.indexOf('exceptional') !== -1) {
+					return 'E';
+				}
+				if (src.indexOf('rare') !== -1) {
+					return 'R';
+				}
+				if (src.indexOf('legendary') !== -1) {
+					return 'L';
+				}
+			}
+			console.log('failed to find rarity')
+		}
+	}
 
-			if (!name) { return; }
+	$('table.wikitable tr').each(function(i, tr) {
+			if (i === 0) { return; } //ignore the header
+			var $tds = $(this).find('td');
+			var name = extract($tds[1]);
+
+			if (!name) { console.log('failed on row', i); return; }
 
 			var gameId;
 			if (nameIdMap[name]) {
 				gameId = nameIdMap[name];
 			} else if (nameIdMap[titleCase(name)]) {
 				gameId = nameIdMap[titleCase(name)];
-			} else if (nameIdMap[properTitleCase(name)]) {
-				gameId = nameIdMap[properTitleCase(name)];
 			} else {
 				console.log('Failed to find: '+ name);
 				return;
 			}
 			nameIdMap[name] = null;
 
-			var life = extract($tds[7]);
+			var life = extract($tds[8]);
 			if (life) { life = life.replace('n/a', 0); }
 
-			var power = extract($tds[6]);
+			var power = extract($tds[7]);
 			if (isNaN(power)) { power = ''; }
 
-			cards.push({
+			var faeria = extract($tds[5]);
+			if (!faeria) { faeria = '0'; }
+
+			var c = {
 				name: name,
-				type: extract($tds[2]),
-				gold: extract($tds[3]),
-				faeria: extract($tds[4]),
-				landCost: extract($tds[5]),
-				landColor: colorOrder[i],
+				type: titleCase(extract($tds[3])),
+				gold: extract($tds[4]),
+				faeria: faeria,
+				landCost: extract($tds[6]),
+				landColor: getColor($tds[2]),
 				power: power,
 				life: life,
-				rarity: extract($tds[8]),
-				ability: extract($tds[9]),
-				gameId: gameId
-			});
-		});
-	});
+				rarity: getRarity($tds[9]),
+				ability: extract($tds[10], true),
+				gameId: +gameId
+			};
 
-	for (var name in nameIdMap) {
-		if (nameIdMap[name]) {
-			cards.push({
-				name: name,
-				type: null,
-				gold: null,
-				faeria: null,
-				landCost: null,
-				landColor: null,
-				power: null,
-				life: null,
-				rarity: null,
-				ability: null,
-				gameId: nameIdMap[name],
-				noData: true
-			});
-		}
-	}
+			cards.push(c);
+	});
 
 	return cards;
 }
 
 function init() {
-	request('http://faeriawiki.de/wiki_en/index.php?title=Card_list', function(err, resp, body) {
+	request('http://faeria.gamepedia.com/Cards', function(err, resp, body) {
 		if (err) {
 			throw err;
 		}

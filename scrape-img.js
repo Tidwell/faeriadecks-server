@@ -6,8 +6,8 @@ var http = require('http');
 
 function pad(id) {
 	id = String(id);
-	while (id.length < 4) {
-		id = 0+id;
+	while (id.length < 3) {
+		id = '0'+id;
 	}
 	return id;
 }
@@ -34,7 +34,7 @@ fs.readFile('./cards.json', 'utf8', function(err, data) {
 			});
 
 			res.on('end', function() {
-				fs.writeFile('./imgs/'+pad(card.gameId)+'.jpg', imagedata, 'binary', function(err) {
+				fs.writeFile('./imgs/'+card.gameId+'.jpg', imagedata, 'binary', function(err) {
 					if (err) {
 						console.log('error with '+ card.name+' '+card.id);
 					}
